@@ -1,9 +1,14 @@
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { ToDos } from '../utils/store'
+import { categoryAtom, ToDos } from '../utils/store'
+
+const Form = styled.form`
+    width: 100%;
+` 
 
 const Input = styled.input`
+  padding: 0px 15px;  
   width: 50%;
   height: 5vh;
   border: 3px solid white;
@@ -33,17 +38,17 @@ interface IValidSubmit {
 
 function ToDoForm() {
     const setTodos = useSetRecoilState(ToDos);
-
+    const category = useRecoilValue(categoryAtom)
     const validSubmit = (data : IValidSubmit) => {
         console.log(data.toDo);
         setValue("toDo", "");
-        setTodos( oldTodos => [{id:Date.now(), content: data.toDo, catagory:"TO-DO"} , ...oldTodos ]);
+        setTodos( oldTodos => [{id:Date.now(), content: data.toDo, category} , ...oldTodos ]);
     };
 
     const {register, handleSubmit, setValue} = useForm<IValidSubmit>();
     return (
-            <form
-                style={{display: 'flex', justifyContent:'center', marginTop:'20px'}} 
+            <Form
+                style={{display: 'flex', justifyContent:'center', margin:'20px 0px'}} 
                 onSubmit={handleSubmit(validSubmit)}
             >
                 <Input {...register("toDo", {
@@ -51,7 +56,7 @@ function ToDoForm() {
                     })}
                 />
                 <Button>add</Button>
-            </form>
+            </Form>
     )
 }
 
